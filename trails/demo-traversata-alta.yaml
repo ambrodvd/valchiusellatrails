@@ -1,0 +1,14 @@
+# DEMO — synthetic track, replace with a real one.
+title:
+  it: "DEMO · Traversata alta"
+  en: "DEMO · High traverse"
+description:
+  it: "Traccia dimostrativa. Traversata in quota lungo la cresta, rientro con mezzi o auto in punta."
+  en: "Demo track. High-level ridge traverse; you need a car shuttle or transport back."
+difficulty: EE
+activity: [trail]
+season: [6, 7, 8, 9, 10]
+snow:
+  it: "Nevai possibili nei canali esposti a nord fino a fine giugno."
+  en: "Snowfields may linger in north-facing gullies until late June."
+order: 2

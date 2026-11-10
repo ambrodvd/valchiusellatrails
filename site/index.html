@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Valchiusella Trail</title>
+  <meta name="description" content="Sentieri e tracce GPX della Valchiusella: mappa, altimetria, difficoltà, punti acqua e stagione.">
+  <meta name="theme-color" content="#12262b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- floating top bar -->
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="Home">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="20" fill="currentColor"/>
+        <path d="M7 28c4-1 6-6 9-10s5 2 7 1 4-7 6-6 3 9 4 15" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span id="site-title">Valchiusella Trail</span>
+    </a>
+    <label class="searchbox">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input type="search" id="f-search" data-i18n-placeholder="search" autocomplete="off">
+    </label>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="it">IT</button>
+      <button data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <!-- floating panel / bottom sheet -->
+  <aside class="sheet" id="panel">
+    <button class="grip" id="grip" aria-label="Expand"><span></span></button>
+
+    <section id="list-view">
+      <div class="sheet-head">
+        <div>
+          <p class="eyebrow" id="site-subtitle"></p>
+          <h1 id="count"></h1>
+        </div>
+        <button type="button" class="filter-btn" id="filter-toggle" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          <span data-i18n="filters"></span>
+          <b id="filter-badge" hidden></b>
+        </button>
+      </div>
+
+      <div class="chiprow" id="quick">
+        <button type="button" data-q="loop" data-i18n="loop"></button>
+        <button type="button" data-q="point" data-i18n="point"></button>
+        <button type="button" data-q="season" data-i18n="inSeason"></button>
+        <button type="button" data-q="hub" data-i18n="fromHub"></button>
+        <button type="button" data-q="trail" data-i18n="trail"></button>
+        <button type="button" data-q="hike" data-i18n="hike"></button>
+      </div>
+
+      <form class="more" id="filters" hidden autocomplete="off">
+        <div class="field">
+          <span class="label" data-i18n="distance"></span>
+          <div class="range">
+            <input type="number" id="f-dmin" min="0" step="1" inputmode="numeric" data-i18n-placeholder="from">
+            <span>–</span>
+            <input type="number" id="f-dmax" min="0" step="1" inputmode="numeric" data-i18n-placeholder="to">
+            <span>km</span>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label" data-i18n="difficulty"></span>
+          <div class="diffs" id="f-diff">
+            <button type="button" data-v="T"><i></i>T</button>
+            <button type="button" data-v="E"><i></i>E</button>
+            <button type="button" data-v="EE"><i></i>EE</button>
+            <button type="button" data-v="EEA"><i></i>EEA</button>
+          </div>
+        </div>
+        <button type="reset" class="link" data-i18n="reset"></button>
+      </form>
+
+      <ul class="cards" id="cards"></ul>
+    </section>
+
+    <section id="detail-view" hidden></section>
+  </aside>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

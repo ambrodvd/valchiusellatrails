@@ -1,0 +1,20 @@
+# DEMO — synthetic track, replace with a real one.
+title:
+  it: "DEMO · Anello dal Hub"
+  en: "DEMO · Loop from the Hub"
+description:
+  it: >
+    Traccia dimostrativa. Anello che parte dal Valchiusella Mountain Hub,
+    sale nel bosco fino agli alpeggi e rientra dal versante opposto.
+  en: >
+    Demo track. A loop starting at the Valchiusella Mountain Hub, climbing
+    through the woods to the alpine pastures and returning on the other side.
+difficulty: E          # T | E | EE | EEA  (CAI scale)
+activity: [trail, hike]
+season: [4, 5, 6, 7, 8, 9, 10, 11]
+snow:
+  it: "Sopra i 1300 m possibile neve da dicembre a marzo."
+  en: "Snow likely above 1300 m from December to March."
+water:
+  - { name: "Fontana alpeggio", lat: 45.5238, lon: 7.7130 }
+order: 1
