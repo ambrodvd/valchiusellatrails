@@ -1,0 +1,27 @@
+# Site-wide settings. Edit freely; run `uv run scripts/build.py` to apply.
+
+site:
+  title: Valchiusella Trail
+  subtitle:
+    it: Sentieri e tracce GPX della Valchiusella
+    en: Trails and GPX tracks of Valchiusella
+
+# Reference point shown on the map. Trails starting within
+# `hub_radius_m` of it are tagged "from the Hub".
+# TODO: set the exact coordinates of the Hub (right-click in Google Maps → copy coords).
+hub:
+  name: Valchiusella Mountain Hub
+  lat: 45.5095
+  lon: 7.7490
+  url: ""            # optional link (website, Instagram…)
+  hub_radius_m: 600
+
+map:
+  center: [45.515, 7.72]
+  zoom: 12
+  # Optional: free key from https://www.thunderforest.com/ to enable the
+  # "Outdoors" base map. Leave empty to hide it.
+  thunderforest_key: ""
+
+# A track is considered a loop when start and end are closer than this.
+loop_threshold_m: 300
