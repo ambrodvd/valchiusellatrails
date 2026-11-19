@@ -7,7 +7,7 @@ downloadable GPX files. Hosted for free on GitHub Pages; no server, no database.
 
 ```
 trails/<slug>.gpx     ← your original track (Garmin, Strava, Komoot export…)
-trails/<slug>.yaml    ← optional info: title, difficulty, season, water…
+trails/<slug>.yaml    ← optional info: title, activity, season, warning, water…
         │
         ▼  scripts/build.py   (runs automatically on every push)
 site/data/trails.json ← stats, simplified line, elevation profile
@@ -29,8 +29,12 @@ site/gpx/<slug>.gpx   ← cleaned GPX: no times, HR, device or author
    description:
      it: "Salita classica…"
      en: "Classic climb…"
-   difficulty: EE              # T | E | EE | EEA (CAI scale)
-   activity: [trail, hike]     # one or both
+   activity: [trail]           # trail (trail running) | bike (gravel/MTB)
+   style: alpine               # trail only: runnable | alpine | vertical
+                               # (one value or a list)
+   warning:                    # optional: shown as a highlighted notice
+     it: "Tratto esposto…"     # on the route page
+     en: "Exposed section…"
    season: [6, 7, 8, 9, 10]    # good months (1-12); omit = all year
    snow:
      it: "Neve sopra i 2000 m fino a giugno."
@@ -50,7 +54,7 @@ site/gpx/<slug>.gpx   ← cleaned GPX: no times, HR, device or author
 3. Commit and push. The site updates in about a minute.
 
 Everything not in the YAML falls back to sensible defaults (title from the GPX
-track name, activity = hike).
+track name, activity = trail).
 
 ## Run locally (Codespaces)
 
