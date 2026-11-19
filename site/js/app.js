@@ -3,6 +3,8 @@
   "use strict";
 
   const ACT_COLOR = { trail: "#e0602c", bike: "#6f4bd8" }; // keep in sync with --c-trail / --c-bike
+  // Trail running sub-categories: each has its own colour (tags, chips, map lines)
+  const STYLE_COLOR = { runnable: "#f5b800", alpine: "#f76707", vertical: "#e03131" };
   const NO_ACT_COLOR = "#3c5257";
   const INK = "#12262b";
   const NOW_MONTH = new Date().getMonth() + 1;
@@ -34,7 +36,7 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const t = (key) => I18N[state.lang][key];
   const loc = (obj) => (obj && (obj[state.lang] || obj.it || obj.en)) || "";
-  const colorOf = (trail) => ACT_COLOR[trail.activity[0]] || NO_ACT_COLOR;
+  const colorOf = (trail) => STYLE_COLOR[(trail.style || [])[0]] || ACT_COLOR[trail.activity[0]] || NO_ACT_COLOR;
   const fmt = (n, d = 0) => (n == null ? "–" : Number(n).toLocaleString(state.lang === "it" ? "it-IT" : "en-GB", { maximumFractionDigits: d, minimumFractionDigits: d }));
 
   const store = {
@@ -214,6 +216,7 @@
         renderList();
       });
     });
+    $$("#styles button").forEach((b) => b.style.setProperty("--c", STYLE_COLOR[b.dataset.s]));
     $$("#styles button").forEach((b) => b.addEventListener("click", () => {
       const s = b.dataset.s;
       f.style.has(s) ? f.style.delete(s) : f.style.add(s);
@@ -266,7 +269,7 @@
   function tagsHTML(tr) {
     const b = [];
     for (const a of tr.activity) b.push(`<span class="tag act" style="--c:${ACT_COLOR[a] || NO_ACT_COLOR}">${esc(t(a))}</span>`);
-    for (const s of tr.style) b.push(`<span class="tag style s-${esc(s)}">${esc(t(s))}</span>`);
+    for (const s of tr.style) b.push(`<span class="tag style s-${esc(s)}" style="--c:${STYLE_COLOR[s] || ACT_COLOR.trail}">${esc(t(s))}</span>`);
     b.push(`<span class="tag">${esc(t(tr.type))}</span>`);
     if (tr.from_hub) b.push(`<span class="tag hub">${esc(t("startsHub"))}</span>`);
     return `<div class="tags">${b.join("")}</div>`;

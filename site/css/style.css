@@ -92,7 +92,10 @@ svg { flex: none; }
 .chiprow button.act.on { background: color-mix(in srgb, var(--c) 12%, #fff); border-color: var(--c); color: var(--ink); }
 .chiprow.sub { padding-top: 0; margin-top: -4px; }
 .chiprow.sub button { height: 28px; padding: 0 11px; font-size: 12.5px; background: var(--sand); }
-.chiprow.sub button.on { background: var(--c-trail); border-color: var(--c-trail); color: #fff; }
+.chiprow.sub button { border-color: color-mix(in srgb, var(--c) 45%, var(--line)); }
+.chiprow.sub button.on { background: var(--c); border-color: var(--c); color: #fff; }
+/* yellow needs dark text */
+.chiprow.sub button.on[data-s="runnable"], .tag.s-runnable { color: var(--ink); }
 
 .more { margin: 0 18px 12px; padding: 14px; background: var(--paper); border-radius: 14px; display: grid; gap: 14px; }
 .field { display: grid; gap: 7px; }
