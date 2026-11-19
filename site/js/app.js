@@ -98,7 +98,7 @@
 
     const hub = state.cfg.hub;
     if (hub && hub.lat != null) {
-      const icon = L.divIcon({ className: "", html: `<div class="hub-pin">${ICON.hub}</div>`, iconSize: [40, 40], iconAnchor: [20, 20] });
+      const icon = L.divIcon({ className: "", html: `<div class="hub-pin"><img src="img/logo-vmh.png" alt=""></div>`, iconSize: [44, 44], iconAnchor: [22, 22], popupAnchor: [0, -22] });
       L.marker([hub.lat, hub.lon], { icon, zIndexOffset: 1000, title: hub.name })
         .addTo(map)
         .bindPopup(() => `<strong>${esc(hub.name)}</strong><br><span class="muted">${esc(t("hub"))}</span>` +
