@@ -32,7 +32,7 @@ window.I18N = {
     distance: "Distance", from: "From", to: "Up to",
     elevation: "Elevation gain", activity: "Activity",
     trail: "Trail running", bike: "Gravel/MTB",
-    runnable: "Runnable", alpine: "Alpine", vertical: "Vertical",
+    runnable: "Hilly", alpine: "Alpine", vertical: "Vertical",
     warning: "Caution",
     inSeason: "Good this month", fromHub: "Starts at the Hub",
     reset: "Reset filters", filters: "Filters",
