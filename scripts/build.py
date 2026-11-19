@@ -31,8 +31,8 @@ SITE_DIR = ROOT / "site"
 DATA_DIR = SITE_DIR / "data"
 GPX_OUT_DIR = SITE_DIR / "gpx"
 
-DIFFICULTIES = {"T", "E", "EE", "EEA"}
-ACTIVITIES = {"trail", "hike"}
+ACTIVITIES = {"trail", "bike"}                  # trail running | gravel/MTB
+TRAIL_STYLES = {"runnable", "alpine", "vertical"}  # sub-categories of trail running
 PROFILE_POINTS = 400        # resampled points for the elevation chart
 SIMPLIFY_TOLERANCE_M = 4.0  # Douglas-Peucker tolerance for the map line
 ELE_SMOOTH_WINDOW = 5       # moving-average window (points) before gain calc
@@ -215,15 +215,20 @@ def process_trail(gpx_path: Path, cfg: dict) -> dict:
         from_hub = haversine(lats[0], lons[0], hub["lat"], hub["lon"]) <= hub.get("hub_radius_m", 600)
 
     # validation of the extra fields
-    difficulty = meta.get("difficulty")
-    if difficulty is not None and difficulty not in DIFFICULTIES:
-        raise ValueError(f"{slug}: difficulty must be one of {sorted(DIFFICULTIES)}")
-    activity = meta.get("activity", ["hike"])
+    activity = meta.get("activity", ["trail"])
     if isinstance(activity, str):
         activity = [activity]
     bad = set(activity) - ACTIVITIES
     if bad:
         raise ValueError(f"{slug}: unknown activity {bad}; use {sorted(ACTIVITIES)}")
+    style = meta.get("style", [])
+    if isinstance(style, str):
+        style = [style]
+    bad = set(style) - TRAIL_STYLES
+    if bad:
+        raise ValueError(f"{slug}: unknown style {bad}; use {sorted(TRAIL_STYLES)}")
+    if style and "trail" not in activity:
+        raise ValueError(f"{slug}: 'style' only applies to activity 'trail'")
     season = [int(m) for m in meta.get("season", [])]
     if any(m < 1 or m > 12 for m in season):
         raise ValueError(f"{slug}: season months must be 1-12")
@@ -270,8 +275,9 @@ def process_trail(gpx_path: Path, cfg: dict) -> dict:
         "title": title,
         "description": localized(meta.get("description"), "description", slug),
         "snow": localized(meta.get("snow"), "snow", slug),
-        "difficulty": difficulty,
+        "warning": localized(meta.get("warning"), "warning", slug),
         "activity": activity,
+        "style": style,
         "season": season,
         "type": trail_type,
         "from_hub": bool(from_hub),

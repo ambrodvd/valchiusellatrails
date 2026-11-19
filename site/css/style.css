@@ -7,10 +7,10 @@
   --line: #e6e1d8;
   --accent: #0f8b8d;
   --accent-soft: #e2f2f1;
-  --d-T: #2e9e6a;
-  --d-E: #e2a614;
-  --d-EE: #e0602c;
-  --d-EEA: #8b2f5c;
+  --c-trail: #e0602c;
+  --c-bike: #6f4bd8;
+  --warn: #b45309;
+  --warn-soft: #fff4e0;
   --water: #2b7fc4;
   --shadow: 0 10px 30px rgba(18, 38, 43, .18), 0 2px 6px rgba(18, 38, 43, .08);
   --r: 18px;
@@ -81,25 +81,24 @@ svg { flex: none; }
 }
 .chiprow::-webkit-scrollbar { display: none; }
 @media (min-width: 821px) { .chiprow { flex-wrap: wrap; } }
-.hero .tag:not(.diff):not(.hub) { background: var(--paper); }
+.hero .tag:not(.act):not(.hub):not(.warn) { background: var(--paper); }
 .chiprow button {
   flex: none; height: 32px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line);
   background: var(--paper); font-size: 13px; font-weight: 500; white-space: nowrap;
 }
 .chiprow button.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.chiprow button.act { display: inline-flex; align-items: center; gap: 7px; }
+.chiprow button.act i { width: 14px; height: 4px; border-radius: 2px; background: var(--c); }
+.chiprow button.act.on { background: color-mix(in srgb, var(--c) 12%, #fff); border-color: var(--c); color: var(--ink); }
+.chiprow.sub { padding-top: 0; margin-top: -4px; }
+.chiprow.sub button { height: 28px; padding: 0 11px; font-size: 12.5px; background: var(--sand); }
+.chiprow.sub button.on { background: var(--c-trail); border-color: var(--c-trail); color: #fff; }
 
 .more { margin: 0 18px 12px; padding: 14px; background: var(--paper); border-radius: 14px; display: grid; gap: 14px; }
 .field { display: grid; gap: 7px; }
 .label { font-size: 12px; font-weight: 600; color: var(--muted); }
 .range { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
 .range input { width: 100%; min-width: 0; height: 36px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; font: inherit; background: var(--sand); }
-.diffs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.diffs button {
-  display: flex; align-items: center; justify-content: center; gap: 6px; height: 34px;
-  border: 1px solid var(--line); border-radius: 10px; background: var(--sand); font-weight: 700; font-size: 13px;
-}
-.diffs i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
-.diffs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
 .link { justify-self: start; background: none; border: 0; padding: 0; color: var(--accent); font-weight: 600; font-size: 13px; }
 
 /* ------------------------------------------------ cards */
@@ -120,7 +119,8 @@ svg { flex: none; }
 .meta svg { width: 14px; height: 14px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
 .tag { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 6px; background: var(--sand); color: var(--ink-2); }
-.tag.diff { background: var(--c); color: #fff; }
+.tag.act { background: var(--c); color: #fff; }
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
 .tag.hub { background: var(--ink); color: #fff; }
 .empty { padding: 28px 12px; text-align: center; color: var(--muted); list-style: none; }
 
@@ -150,6 +150,12 @@ svg { flex: none; }
 }
 .months span.ok { background: var(--accent-soft); color: var(--accent); }
 .months span.now { border-bottom-color: var(--ink); }
+.warning {
+  display: flex; gap: 10px; margin: 8px 12px 0; padding: 12px 14px; border-radius: 14px;
+  background: var(--warn-soft); border: 1px solid #f3cf8f; color: #5c3a06; font-size: 13.5px; line-height: 1.5;
+}
+.warning svg { width: 20px; height: 20px; fill: none; stroke: var(--warn); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
+.warning strong { color: var(--warn); }
 .snow { display: flex; gap: 8px; margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: #eaf2fa; font-size: 13.5px; color: var(--ink-2); }
 .pois { list-style: none; margin: 0; padding: 0; }
 .pois li + li { border-top: 1px solid var(--line); }

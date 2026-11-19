@@ -2,8 +2,8 @@
 (() => {
   "use strict";
 
-  const DIFF_COLOR = { T: "#2e9e6a", E: "#e2a614", EE: "#e0602c", EEA: "#8b2f5c" };
-  const NO_DIFF_COLOR = "#3c5257";
+  const ACT_COLOR = { trail: "#e0602c", bike: "#6f4bd8" }; // keep in sync with --c-trail / --c-bike
+  const NO_ACT_COLOR = "#3c5257";
   const INK = "#12262b";
   const NOW_MONTH = new Date().getMonth() + 1;
   const MOBILE = () => window.matchMedia("(max-width: 820px)").matches;
@@ -18,6 +18,7 @@
     flag: '<svg viewBox="0 0 24 24"><path d="M6 21V4h11l-2 4 2 4H8v9Z"/></svg>',
     snow: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2b7fc4" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 2 3-2M9 20l3-2 3 2"/></svg>',
     hub: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"><path d="M3 19 9.5 8l3.5 5 2.5-3L21 19Z"/></svg>',
+    warn: '<svg viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17.5v.01"/></svg>',
   };
 
   const state = {
@@ -25,7 +26,7 @@
     trails: [],
     lang: "it",
     selected: null,
-    filters: { q: "", type: "all", dmin: null, dmax: null, diff: new Set(), act: new Set(), season: false, hub: false },
+    filters: { q: "", dmin: null, dmax: null, gmin: null, gmax: null, act: new Set(), style: new Set(), season: false },
   };
 
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -33,7 +34,7 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const t = (key) => I18N[state.lang][key];
   const loc = (obj) => (obj && (obj[state.lang] || obj.it || obj.en)) || "";
-  const colorOf = (trail) => DIFF_COLOR[trail.difficulty] || NO_DIFF_COLOR;
+  const colorOf = (trail) => ACT_COLOR[trail.activity[0]] || NO_ACT_COLOR;
   const fmt = (n, d = 0) => (n == null ? "–" : Number(n).toLocaleString(state.lang === "it" ? "it-IT" : "en-GB", { maximumFractionDigits: d, minimumFractionDigits: d }));
 
   const store = {
@@ -169,21 +170,27 @@
       const hay = [tr.title.it, tr.title.en, tr.description.it, tr.description.en].join(" ").toLowerCase();
       if (!hay.includes(f.q)) return false;
     }
-    if (f.type !== "all" && tr.type !== f.type) return false;
     if (f.dmin != null && tr.distance_km < f.dmin) return false;
     if (f.dmax != null && tr.distance_km > f.dmax) return false;
-    if (f.diff.size && !f.diff.has(tr.difficulty)) return false;
-    if (f.act.size && !tr.activity.some((a) => f.act.has(a))) return false;
+    if (f.gmin != null && (tr.ele_gain ?? 0) < f.gmin) return false;
+    if (f.gmax != null && (tr.ele_gain ?? 0) > f.gmax) return false;
+    if (f.act.size) {
+      const bikeOk = f.act.has("bike") && tr.activity.includes("bike");
+      const trailOk = f.act.has("trail") && tr.activity.includes("trail") &&
+        (!f.style.size || tr.style.some((s) => f.style.has(s)));
+      if (!bikeOk && !trailOk) return false;
+    }
     if (f.season && tr.season.length && !tr.season.includes(NOW_MONTH)) return false;
-    if (f.hub && !tr.from_hub) return false;
     return true;
   }
 
   function syncQuickChips() {
     const f = state.filters;
-    const on = { loop: f.type === "loop", point: f.type === "point", season: f.season, hub: f.hub, trail: f.act.has("trail"), hike: f.act.has("hike") };
+    const on = { season: f.season, trail: f.act.has("trail"), bike: f.act.has("bike") };
     $$("#quick button").forEach((b) => b.classList.toggle("on", !!on[b.dataset.q]));
-    const adv = (f.dmin != null) + (f.dmax != null) + f.diff.size;
+    $("#styles").hidden = !f.act.has("trail");
+    $$("#styles button").forEach((b) => b.classList.toggle("on", f.style.has(b.dataset.s)));
+    const adv = (f.dmin != null) + (f.dmax != null) + (f.gmin != null) + (f.gmax != null);
     const badge = $("#filter-badge");
     badge.hidden = !adv;
     badge.textContent = adv;
@@ -197,12 +204,19 @@
       renderList();
     });
 
-    $$("#quick button").forEach((b) => b.addEventListener("click", () => {
-      const q = b.dataset.q;
-      if (q === "loop" || q === "point") f.type = f.type === q ? "all" : q;
-      else if (q === "season") f.season = !f.season;
-      else if (q === "hub") f.hub = !f.hub;
-      else f.act.has(q) ? f.act.delete(q) : f.act.add(q);
+    $$("#quick button").forEach((b) => {
+      if (ACT_COLOR[b.dataset.q]) b.style.setProperty("--c", ACT_COLOR[b.dataset.q]);
+      b.addEventListener("click", () => {
+        const q = b.dataset.q;
+        if (q === "season") f.season = !f.season;
+        else if (f.act.has(q)) { f.act.delete(q); if (q === "trail") f.style.clear(); }
+        else f.act.add(q);
+        renderList();
+      });
+    });
+    $$("#styles button").forEach((b) => b.addEventListener("click", () => {
+      const s = b.dataset.s;
+      f.style.has(s) ? f.style.delete(s) : f.style.add(s);
       renderList();
     }));
 
@@ -215,24 +229,18 @@
     const num = (v) => (v === "" ? null : Math.max(0, Number(v)));
     $("#f-dmin").addEventListener("input", (e) => { f.dmin = num(e.target.value); renderList(); });
     $("#f-dmax").addEventListener("input", (e) => { f.dmax = num(e.target.value); renderList(); });
-    $$("#f-diff button").forEach((b) => {
-      b.style.setProperty("--c", DIFF_COLOR[b.dataset.v]);
-      b.addEventListener("click", () => {
-        f.diff.has(b.dataset.v) ? f.diff.delete(b.dataset.v) : f.diff.add(b.dataset.v);
-        b.classList.toggle("on", f.diff.has(b.dataset.v));
-        renderList();
-      });
-    });
+    $("#f-gmin").addEventListener("input", (e) => { f.gmin = num(e.target.value); renderList(); });
+    $("#f-gmax").addEventListener("input", (e) => { f.gmax = num(e.target.value); renderList(); });
     $("#filters").addEventListener("reset", () => {
-      Object.assign(f, { type: "all", dmin: null, dmax: null, season: false, hub: false });
-      f.diff.clear(); f.act.clear();
-      $$("#f-diff button").forEach((b) => b.classList.remove("on"));
+      Object.assign(f, { dmin: null, dmax: null, gmin: null, gmax: null, season: false });
+      f.act.clear(); f.style.clear();
       setTimeout(renderList, 0);
     });
     $("#filters").addEventListener("submit", (e) => e.preventDefault());
 
-    const used = new Set(state.trails.map((x) => x.difficulty));
-    $$("#f-diff button").forEach((b) => { b.hidden = !used.has(b.dataset.v); });
+    // hide style chips no trail uses
+    const usedStyles = new Set(state.trails.flatMap((x) => x.style));
+    $$("#styles button").forEach((b) => { b.hidden = !usedStyles.has(b.dataset.s); });
   }
 
   // ------------------------------------------------------------ rendering
@@ -257,9 +265,9 @@
 
   function tagsHTML(tr) {
     const b = [];
-    if (tr.difficulty) b.push(`<span class="tag diff" style="--c:${colorOf(tr)}" title="${esc(t("diffNames")[tr.difficulty])}">${tr.difficulty}</span>`);
+    for (const a of tr.activity) b.push(`<span class="tag act" style="--c:${ACT_COLOR[a] || NO_ACT_COLOR}">${esc(t(a))}</span>`);
+    for (const s of tr.style) b.push(`<span class="tag">${esc(t(s))}</span>`);
     b.push(`<span class="tag">${esc(t(tr.type))}</span>`);
-    for (const a of tr.activity) b.push(`<span class="tag">${esc(t(a))}</span>`);
     if (tr.from_hub) b.push(`<span class="tag hub">${esc(t("startsHub"))}</span>`);
     return `<div class="tags">${b.join("")}</div>`;
   }
@@ -308,6 +316,7 @@
       `<li><button data-lat="${p.lat}" data-lon="${p.lon}"><span class="dot ${kind}">${kind === "water" ? ICON.drop : ICON.flag}</span>${esc(p.name || "—")}</button></li>`).join("")}</ul>`;
     const snow = loc(tr.snow);
     const desc = loc(tr.description);
+    const warning = loc(tr.warning);
 
     $("#detail-view").innerHTML = `
       <div class="hero">
@@ -320,13 +329,13 @@
         <div><small>${esc(t("gain"))}</small><b>${fmt(tr.ele_gain)}<span>m</span></b></div>
         <div><small>${esc(t("max"))}</small><b>${fmt(tr.ele_max)}<span>m</span></b></div>
       </div>
+      ${warning ? `<div class="warning" role="note">${ICON.warn}<span><strong>${esc(t("warning"))}:</strong> ${esc(warning)}</span></div>` : ""}
       <section class="block">
         <h4>${esc(t("profile"))}</h4>
         <div class="chart-box"><canvas id="profile"></canvas></div>
         <div class="subline">
           <span>${esc(t("loss"))} ${fmt(tr.ele_loss)} m</span>
           <span>${esc(t("min"))} ${fmt(tr.ele_min)} m</span>
-          <span>${esc(tr.difficulty ? t("diffNames")[tr.difficulty] : "")}</span>
         </div>
       </section>
       ${desc ? `<section class="block"><p>${esc(desc)}</p></section>` : ""}

@@ -7,8 +7,8 @@ description:
     corribile e adatto a tutte le stagiono.
   en: >
     A loop starting at the Valchiusella Mountain Hub, runnable and situable for any season.
-difficulty: E          # T | E | EE | EEA  (CAI scale)
-activity: [trail]
+activity: [trail]      # trail | bike
+style: runnable        # runnable | alpine | vertical (trail only)
 season: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 snow:
   it: "Neve poco presente se non in determinati giorni, solitamente fattibile anche con neve"

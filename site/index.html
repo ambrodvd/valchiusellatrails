@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Valchiusella Trail</title>
-  <meta name="description" content="Sentieri e tracce GPX della Valchiusella: mappa, altimetria, difficoltà, punti acqua e stagione.">
+  <meta name="description" content="Tracce GPX della Valchiusella per trail running e gravel/MTB: mappa, altimetria, punti acqua e stagione.">
   <meta name="theme-color" content="#12262b">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,12 +53,14 @@
       </div>
 
       <div class="chiprow" id="quick">
-        <button type="button" data-q="loop" data-i18n="loop"></button>
-        <button type="button" data-q="point" data-i18n="point"></button>
         <button type="button" data-q="season" data-i18n="inSeason"></button>
-        <button type="button" data-q="hub" data-i18n="fromHub"></button>
-        <button type="button" data-q="trail" data-i18n="trail"></button>
-        <button type="button" data-q="hike" data-i18n="hike"></button>
+        <button type="button" data-q="trail" class="act"><i></i><span data-i18n="trail"></span></button>
+        <button type="button" data-q="bike" class="act"><i></i><span data-i18n="bike"></span></button>
+      </div>
+      <div class="chiprow sub" id="styles" hidden>
+        <button type="button" data-s="runnable" data-i18n="runnable"></button>
+        <button type="button" data-s="alpine" data-i18n="alpine"></button>
+        <button type="button" data-s="vertical" data-i18n="vertical"></button>
       </div>
 
       <form class="more" id="filters" hidden autocomplete="off">
@@ -72,12 +74,12 @@
           </div>
         </div>
         <div class="field">
-          <span class="label" data-i18n="difficulty"></span>
-          <div class="diffs" id="f-diff">
-            <button type="button" data-v="T"><i></i>T</button>
-            <button type="button" data-v="E"><i></i>E</button>
-            <button type="button" data-v="EE"><i></i>EE</button>
-            <button type="button" data-v="EEA"><i></i>EEA</button>
+          <span class="label" data-i18n="elevation"></span>
+          <div class="range">
+            <input type="number" id="f-gmin" min="0" step="50" inputmode="numeric" data-i18n-placeholder="from">
+            <span>–</span>
+            <input type="number" id="f-gmax" min="0" step="50" inputmode="numeric" data-i18n-placeholder="to">
+            <span>m D+</span>
           </div>
         </div>
         <button type="reset" class="link" data-i18n="reset"></button>
