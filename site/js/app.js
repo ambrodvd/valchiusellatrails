@@ -266,7 +266,7 @@
   function tagsHTML(tr) {
     const b = [];
     for (const a of tr.activity) b.push(`<span class="tag act" style="--c:${ACT_COLOR[a] || NO_ACT_COLOR}">${esc(t(a))}</span>`);
-    for (const s of tr.style) b.push(`<span class="tag">${esc(t(s))}</span>`);
+    for (const s of tr.style) b.push(`<span class="tag style s-${esc(s)}">${esc(t(s))}</span>`);
     b.push(`<span class="tag">${esc(t(tr.type))}</span>`);
     if (tr.from_hub) b.push(`<span class="tag hub">${esc(t("startsHub"))}</span>`);
     return `<div class="tags">${b.join("")}</div>`;
